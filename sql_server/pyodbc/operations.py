@@ -245,6 +245,9 @@ class DatabaseOperations(BaseDatabaseOperations):
         """
         if name.startswith('[') and name.endswith(']'):
             return name # Quoting once is enough.
+        # SQL Server allows "%" in column names. Escape "%"s so that
+        # CursorWrapper.format_sql() can replace `%s` with `?`.
+        name = name.replace('%', '%%')
         return '[%s]' % name
 
     def random_function_sql(self):
